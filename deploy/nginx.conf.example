@@ -1,0 +1,32 @@
+# akbulutltd.com — statik SPA (dist/) + Supabase proxy
+# CORS olmadan admin paneli ve site verisi için /supabase yolunu Kong'a yönlendirin.
+
+server {
+    listen 80;
+    server_name akbulutltd.com www.akbulutltd.com;
+    root /var/www/akbulut/dist;
+    index index.html;
+
+    location = /robots.txt {
+        default_type text/plain;
+        try_files /robots.txt =404;
+    }
+
+    location = /sitemap.xml {
+        default_type application/xml;
+        try_files /sitemap.xml =404;
+    }
+
+    location /supabase/ {
+        proxy_pass https://akbulut.gozcucloud.com/;
+        proxy_ssl_server_name on;
+        proxy_set_header Host akbulut.gozcucloud.com;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
