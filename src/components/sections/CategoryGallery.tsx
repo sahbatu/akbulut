@@ -37,7 +37,15 @@ export function CategoryGallery({ images, loading, categoryName }: CategoryGalle
   }
 
   if (images.length === 0) {
-    return null
+    return (
+      <div className="rounded-2xl border border-ink/10 bg-paper px-6 py-16 text-center shadow-sm">
+        <p className="font-display text-2xl text-ink/85 mb-2">Mevcut ürün yok</p>
+        <p className="text-ink/50 text-sm max-w-md mx-auto">
+          Bu kategori için henüz ürün görseli eklenmemiş. Diğer kategorilerimize göz atabilir veya
+          teklif almak için bizimle iletişime geçebilirsiniz.
+        </p>
+      </div>
+    )
   }
 
   return (

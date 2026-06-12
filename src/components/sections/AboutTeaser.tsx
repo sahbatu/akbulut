@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { ExperienceStat } from '@/components/ui/ExperienceStat'
 import { slideFromLeft, slideFromRight } from '@/lib/animations'
 
 interface AboutTeaserProps {
@@ -17,14 +18,18 @@ export function AboutTeaser({ text }: AboutTeaserProps) {
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
           >
-            <span className="text-gold text-xs tracking-[0.3em] uppercase">Hakkımızda</span>
-            <h2 className="font-display text-4xl md:text-5xl font-semibold text-paper mt-3 mb-6 leading-tight">
-              Kalite ve Güvenin <span className="gold-gradient-text">18 Yılı</span>
+            <span className="eyebrow text-gold">Hakkımızda</span>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold text-ink mt-3 mb-6 leading-tight">
+              Kalite ve Güvenin{' '}
+              <span className="gold-gradient-text whitespace-nowrap">
+                <span className="stat-number text-[0.92em] align-baseline">18</span>
+                <span className="font-display"> Yılı</span>
+              </span>
             </h2>
-            <p className="text-paper/60 leading-relaxed text-base md:text-lg">{text}</p>
+            <p className="text-ink/60 leading-relaxed text-base md:text-lg">{text}</p>
             <Link
               to="/hakkimizda"
-              className="inline-flex items-center gap-3 mt-8 text-gold text-sm tracking-widest uppercase group"
+              className="inline-flex items-center gap-3 mt-8 text-gold text-sm tracking-wide font-semibold group"
               data-cursor-hover
             >
               Daha Fazla
@@ -43,10 +48,7 @@ export function AboutTeaser({ text }: AboutTeaserProps) {
               <div className="absolute inset-4 border border-gold/20 rotate-3" />
               <div className="absolute inset-0 bg-ink-light flex items-center justify-center">
                 <div className="text-center p-8">
-                  <span className="font-display text-7xl md:text-8xl font-bold gold-gradient-text">
-                    18
-                  </span>
-                  <p className="text-paper/50 text-sm tracking-[0.3em] uppercase mt-2">Yıllık Deneyim</p>
+                  <ExperienceStat years={18} />
                 </div>
               </div>
               <motion.div

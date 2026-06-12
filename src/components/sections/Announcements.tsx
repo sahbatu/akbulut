@@ -10,10 +10,10 @@ export function Announcements({ items }: AnnouncementsProps) {
   if (items.length === 0) return null
 
   return (
-    <section className="py-20 md:py-32 bg-ink-light/50">
+    <section className="py-20 md:py-32 bg-paper border-y border-ink/5">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
-        <span className="text-gold text-xs tracking-[0.3em] uppercase">Duyurular</span>
-        <h2 className="font-display text-4xl md:text-5xl font-semibold text-paper mt-2 mb-12">
+        <span className="eyebrow text-gold">Duyurular</span>
+        <h2 className="font-display text-4xl md:text-5xl font-semibold text-ink mt-2 mb-12">
           Haberler
         </h2>
 
@@ -27,21 +27,21 @@ export function Announcements({ items }: AnnouncementsProps) {
           {items.map((item, i) => (
             <motion.article
               key={item.id}
-              className="group p-8 border border-paper/5 hover:border-gold/30 transition-all duration-500 bg-ink/50"
+              className="group p-8 border border-ink/8 hover:border-gold/40 transition-all duration-500 bg-paper-dark/40 rounded-xl"
               variants={fadeUp}
               custom={i}
             >
-              <time className="text-paper/30 text-xs tracking-wider">
+              <time className="text-ink/40 text-xs tracking-wider">
                 {new Date(item.published_at).toLocaleDateString('tr-TR', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
                 })}
               </time>
-              <h3 className="font-display text-2xl text-paper mt-3 mb-3 group-hover:text-gold transition-colors">
+              <h3 className="font-display text-2xl text-ink mt-3 mb-3 group-hover:text-gold transition-colors">
                 {item.title}
               </h3>
-              <p className="text-paper/50 text-sm leading-relaxed">{item.excerpt}</p>
+              <p className="text-ink/55 text-sm leading-relaxed">{item.excerpt}</p>
             </motion.article>
           ))}
         </motion.div>

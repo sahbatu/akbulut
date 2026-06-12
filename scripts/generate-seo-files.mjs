@@ -38,6 +38,8 @@ const STATIC_PAGES = [
   { path: '/hakkimizda', priority: '0.8', changefreq: 'monthly' },
   { path: '/urunlerimiz', priority: '0.9', changefreq: 'weekly' },
   { path: '/iletisim', priority: '0.7', changefreq: 'monthly' },
+  { path: '/kvkk', priority: '0.3', changefreq: 'yearly' },
+  { path: '/cerez-politikasi', priority: '0.3', changefreq: 'yearly' },
 ]
 
 function escapeXml(value) {

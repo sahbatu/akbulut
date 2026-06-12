@@ -31,22 +31,22 @@ export function MontBlancCarousel() {
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <span className="text-gold text-xs tracking-[0.3em] uppercase">{featured.eyebrow}</span>
-            <h2 className="font-display text-4xl md:text-5xl font-semibold text-paper mt-2">
+            <span className="eyebrow text-gold">{featured.eyebrow}</span>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold text-ink mt-2">
               {featured.title}
             </h2>
           </div>
           <div className="flex gap-3">
             <button
               onClick={prev}
-              className="w-12 h-12 border border-paper/10 flex items-center justify-center text-paper/60 hover:border-gold/40 hover:text-gold transition-all"
+              className="w-12 h-12 border border-ink/10 flex items-center justify-center text-ink/50 hover:border-gold/40 hover:text-gold transition-all rounded-lg bg-paper"
               aria-label="Önceki"
             >
               ←
             </button>
             <button
               onClick={next}
-              className="w-12 h-12 border border-paper/10 flex items-center justify-center text-paper/60 hover:border-gold/40 hover:text-gold transition-all"
+              className="w-12 h-12 border border-ink/10 flex items-center justify-center text-ink/50 hover:border-gold/40 hover:text-gold transition-all rounded-lg bg-paper"
               aria-label="Sonraki"
             >
               →
@@ -54,7 +54,7 @@ export function MontBlancCarousel() {
           </div>
         </div>
 
-        <div className="relative aspect-[16/7] overflow-hidden bg-ink-light">
+        <div className="relative aspect-[16/7] overflow-hidden bg-ink-light rounded-2xl shadow-lg shadow-ink/10">
           {slides.map((slide, i) => (
             <img
               key={slide.id}

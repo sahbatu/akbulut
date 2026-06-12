@@ -47,9 +47,9 @@ export function Products() {
               placeholder="Kategori ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-ink-light/50 border border-paper/10 px-5 py-3 pl-12 text-paper text-sm focus:outline-none focus:border-gold/50 transition-colors"
+              className="w-full bg-paper border border-ink/10 px-5 py-3 pl-12 text-ink text-sm focus:outline-none focus:border-gold/50 transition-colors rounded-lg shadow-sm"
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-paper/30">⌕</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/30">⌕</span>
           </div>
         </div>
       </section>
@@ -63,7 +63,7 @@ export function Products() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <p className="text-paper/50 text-center py-12">
+            <p className="text-ink/50 text-center py-12">
               &quot;{search}&quot; için sonuç bulunamadı.
             </p>
           ) : (

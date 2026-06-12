@@ -20,20 +20,20 @@ function SubcategoryItem({
   const nested = getChildren(item.id)
 
   return (
-    <div className="border border-paper/5 hover:border-gold/30 transition-all duration-300">
+    <div className="rounded-lg border border-paper/10 bg-ink-light/60 hover:border-gold/40 transition-all duration-300">
       <Link
         to={`/urunlerimiz/${item.slug}`}
-        className="block px-4 py-3 text-paper/70 text-sm font-medium hover:text-gold transition-colors"
+        className="block px-4 py-3 text-paper/85 text-sm font-medium hover:text-gold transition-colors"
       >
         {item.name}
       </Link>
       {nested.length > 0 && (
-        <ul className="border-t border-paper/5 px-2 py-2 space-y-0.5">
+        <ul className="border-t border-paper/10 px-2 py-2 space-y-0.5">
           {nested.map((child) => (
             <li key={child.id}>
               <Link
                 to={`/urunlerimiz/${child.slug}`}
-                className="block px-2 py-1.5 text-xs text-paper/45 hover:text-gold transition-colors"
+                className="block px-2 py-1.5 text-xs text-paper/65 hover:text-gold transition-colors"
               >
                 {child.name}
               </Link>
@@ -80,8 +80,8 @@ export function ProductCategoryCard({
       layout
     >
       <div
-        className={`border transition-all duration-500 bg-ink-light/40 overflow-hidden rounded-2xl ${
-          expanded ? 'border-gold/40 gold-border-glow' : 'border-paper/5 hover:border-gold/20'
+        className={`border transition-all duration-500 bg-ink overflow-hidden rounded-2xl shadow-md shadow-ink/20 ${
+          expanded ? 'border-gold/50 gold-border-glow' : 'border-ink-light hover:border-gold/35'
         }`}
       >
         <button
@@ -102,11 +102,11 @@ export function ProductCategoryCard({
                   {category.name}
                 </Link>
                 {category.description && (
-                  <p className="text-paper/50 text-sm mt-2 leading-relaxed max-w-lg">
+                  <p className="text-paper/70 text-sm mt-2 leading-relaxed max-w-lg">
                     {category.description}
                   </p>
                 )}
-                <span className="inline-block mt-3 text-paper/30 text-xs">
+                <span className="inline-block mt-3 text-paper/50 text-xs font-body">
                   {children.length} alt kategori
                   {totalCount > children.length && ` · ${totalCount} toplam öğe`}
                 </span>
@@ -131,7 +131,7 @@ export function ProductCategoryCard({
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="px-8 md:px-10 pb-8 md:pb-10 border-t border-paper/5">
+              <div className="px-8 md:px-10 pb-8 md:pb-10 border-t border-paper/10 bg-ink-light/30">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-6">
                   {children.map((child) => (
                     <SubcategoryItem
@@ -141,10 +141,10 @@ export function ProductCategoryCard({
                     />
                   ))}
                 </div>
-                <div className="mt-6 pt-6 border-t border-paper/5 flex justify-end">
+                <div className="mt-6 pt-6 border-t border-paper/10 flex justify-end">
                   <Link
                     to={`/urunlerimiz/${category.slug}`}
-                    className="text-gold text-xs tracking-widest uppercase hover:underline shrink-0"
+                    className="text-gold text-xs tracking-wide font-semibold hover:underline shrink-0"
                   >
                     Galeriyi Gör →
                   </Link>

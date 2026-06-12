@@ -15,16 +15,16 @@ interface ButtonProps {
 
 const variants = {
   primary:
-    'bg-gold text-ink hover:bg-gold-light border border-gold/50 shadow-[0_0_30px_rgba(201,169,98,0.2)]',
+    'bg-gold text-paper hover:bg-gold-light border border-gold/50 shadow-[0_0_30px_rgba(30,107,214,0.25)]',
   outline:
-    'bg-transparent text-paper border border-paper/20 hover:border-gold/60 hover:text-gold',
-  ghost: 'bg-transparent text-paper/70 hover:text-gold border border-transparent',
+    'bg-transparent text-ink border border-ink/15 hover:border-gold/50 hover:text-gold',
+  ghost: 'bg-transparent text-ink/70 hover:text-gold border border-transparent',
 }
 
 const sizes = {
-  sm: 'px-4 py-2 text-xs tracking-widest uppercase',
-  md: 'px-6 py-3 text-sm tracking-widest uppercase',
-  lg: 'px-8 py-4 text-sm tracking-widest uppercase',
+  sm: 'px-4 py-2 text-xs tracking-wide font-semibold',
+  md: 'px-6 py-3 text-sm tracking-wide font-semibold',
+  lg: 'px-8 py-4 text-sm tracking-wide font-semibold',
 }
 
 export function Button({

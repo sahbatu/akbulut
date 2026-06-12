@@ -1,3 +1,4 @@
+import { ExperienceStat } from '@/components/ui/ExperienceStat'
 import { PageSeo } from '@/components/seo/PageSeo'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Timeline } from '@/components/sections/Timeline'
@@ -31,26 +32,21 @@ export function About() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-6">
               {paragraphs.map((para, i) => (
-                <p key={i} className="text-paper/60 leading-relaxed text-base md:text-lg">
+                <p key={i} className="text-ink/65 leading-relaxed text-base md:text-lg">
                   {para}
                 </p>
               ))}
             </div>
             <div className="flex items-center justify-center">
-              <div className="text-center p-10 border border-gold/20 bg-ink-light/30 w-full">
-                <span className="font-display text-8xl font-bold gold-gradient-text">
-                  {settings.years_experience}
-                </span>
-                <p className="text-paper/50 text-sm tracking-[0.3em] uppercase mt-3">
-                  Yıllık Deneyim
-                </p>
+              <div className="text-center p-10 border border-gold/25 bg-ink text-paper rounded-2xl w-full shadow-lg shadow-ink/15">
+                <ExperienceStat years={settings.years_experience} numberClassName="text-8xl" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-ink-light/30">
+      <section className="py-20 md:py-32 bg-paper border-y border-ink/5">
         <div className="max-w-7xl mx-auto px-5 md:px-8">
           <SectionHeading label="Tarihçe" title="Yolculuğumuz" align="center" />
           <Timeline />

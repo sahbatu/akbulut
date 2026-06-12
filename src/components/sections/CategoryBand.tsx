@@ -47,7 +47,7 @@ export function CategoryBand({ categories, loading }: CategoryBandProps) {
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-paper-dark/30 to-transparent pointer-events-none z-10" />
 
       <div className="max-w-7xl mx-auto px-5 md:px-8 mb-12">
-        <span className="text-gold-dim text-xs tracking-[0.3em] uppercase">Hizmetlerimiz</span>
+        <span className="eyebrow text-gold-dim">Hizmetlerimiz</span>
         <h2 className="font-display text-4xl md:text-5xl font-semibold mt-2">Ürün Grupları</h2>
       </div>
 
@@ -59,9 +59,6 @@ export function CategoryBand({ categories, loading }: CategoryBandProps) {
         </div>
       ) : (
         <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-paper to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-paper to-transparent z-10 pointer-events-none" />
-
           <div className="overflow-x-clip py-2">
             <div className="marquee-track items-center px-6">
               {looped.map((cat, i) => (

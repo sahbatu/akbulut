@@ -32,18 +32,18 @@ export function Contact() {
             >
               <div className="space-y-8 mb-10">
                 <div>
-                  <h3 className="text-gold text-xs tracking-[0.3em] uppercase mb-3">Adres</h3>
-                  <p className="text-paper/70 leading-relaxed">{settings.address}</p>
+                  <h3 className="eyebrow text-gold mb-3">Adres</h3>
+                  <p className="text-ink/70 leading-relaxed">{settings.address}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-gold text-xs tracking-[0.3em] uppercase mb-3">Telefon</h3>
+                  <h3 className="eyebrow text-gold mb-3">Telefon</h3>
                   <ul className="space-y-1">
                     {settings.phones.map((phone) => (
                       <li key={phone}>
                         <a
                           href={`tel:${phone.replace(/\s/g, '')}`}
-                          className="text-paper/70 hover:text-gold transition-colors"
+                          className="text-ink/70 hover:text-gold transition-colors"
                           data-cursor-hover
                         >
                           {phone}
@@ -54,15 +54,15 @@ export function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="text-gold text-xs tracking-[0.3em] uppercase mb-3">Faks</h3>
-                  <p className="text-paper/70">{settings.fax}</p>
+                  <h3 className="eyebrow text-gold mb-3">Faks</h3>
+                  <p className="text-ink/70">{settings.fax}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-gold text-xs tracking-[0.3em] uppercase mb-3">E-posta</h3>
+                  <h3 className="eyebrow text-gold mb-3">E-posta</h3>
                   <a
                     href={`mailto:${settings.email}`}
-                    className="text-paper/70 hover:text-gold transition-colors"
+                    className="text-ink/70 hover:text-gold transition-colors"
                     data-cursor-hover
                   >
                     {settings.email}
@@ -70,7 +70,7 @@ export function Contact() {
                 </div>
               </div>
 
-              <div className="relative aspect-video overflow-hidden border border-paper/10">
+              <div className="relative aspect-video overflow-hidden border border-ink/10 rounded-xl">
                 <iframe
                   src={settings.map_embed_url}
                   className="absolute inset-0 w-full h-full grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
@@ -92,15 +92,15 @@ export function Contact() {
             </motion.div>
 
             <motion.div
-              className="p-8 md:p-10 border border-paper/5 bg-ink-light/20"
+              className="p-8 md:p-10 border border-ink/8 bg-paper rounded-2xl shadow-sm shadow-ink/5"
               variants={fadeUp}
               custom={1}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
             >
-              <h3 className="font-display text-2xl text-paper mb-2">Destek ve Sipariş</h3>
-              <p className="text-paper/40 text-sm mb-8">
+              <h3 className="font-display text-2xl text-ink mb-2">Destek ve Sipariş</h3>
+              <p className="text-ink/50 text-sm mb-8">
                 Sipariş detaylarınızı aşağıdaki form aracılığıyla iletebilirsiniz.
               </p>
               <ContactForm />

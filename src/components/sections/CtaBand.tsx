@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/Button'
 
 export function CtaBand() {
   return (
-    <section className="py-20 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-gold/5 to-transparent" />
+    <section className="py-20 md:py-32 relative overflow-hidden bg-ink">
+      <div className="absolute inset-0 bg-gradient-to-r from-gold/15 via-gold/5 to-transparent" />
       <div className="absolute inset-0 border-y border-gold/10" />
 
       <div className="relative max-w-4xl mx-auto px-5 md:px-8 text-center">

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { useSiteData } from '@/hooks/useSiteData'
+import { HeaderAppearanceContext, useHeaderAppearance } from './headerAppearance'
 import {
   CatalogMenuProvider,
   CatalogMenuOverlay,
@@ -18,6 +19,7 @@ const navLinks = [
 
 function HeaderBar() {
   const { settings } = useSiteData()
+  const { dark } = useHeaderAppearance()
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -31,6 +33,15 @@ function HeaderBar() {
 
   const closeMenu = () => setMenuOpen(false)
 
+  const navIdle = dark ? 'text-paper/60 hover:text-paper' : 'text-ink/60 hover:text-ink'
+  const navActive = 'text-gold'
+  const divider = dark ? 'bg-paper/20' : 'bg-ink/15'
+  const estText = dark ? 'text-paper/40' : 'text-ink/40'
+  const logoText = dark
+    ? 'text-paper group-hover:text-gold'
+    : 'text-ink group-hover:text-gold'
+  const menuLine = dark ? 'bg-paper' : 'bg-ink'
+
   return (
     <>
       <div className="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between">
@@ -42,12 +53,14 @@ function HeaderBar() {
               className="h-8 md:h-10 w-auto object-contain"
             />
           ) : (
-            <span className="font-display text-2xl md:text-3xl font-bold tracking-tight text-paper group-hover:text-gold transition-colors duration-300">
+            <span
+              className={`font-display text-2xl md:text-3xl font-bold tracking-tight transition-colors duration-300 ${logoText}`}
+            >
               Akbulut
             </span>
           )}
-          <span className="hidden sm:block w-px h-5 bg-paper/20" />
-          <span className="hidden sm:block text-[10px] tracking-[0.25em] uppercase text-paper/40">
+          <span className={`hidden sm:block w-px h-5 ${divider}`} />
+          <span className={`hidden sm:block text-[10px] tracking-[0.25em] uppercase ${estText}`}>
             Est. 2006
           </span>
         </Link>
@@ -57,9 +70,7 @@ function HeaderBar() {
             to="/"
             end
             className={({ isActive }) =>
-              `text-sm tracking-wide transition-colors duration-300 ${
-                isActive ? 'text-gold' : 'text-paper/60 hover:text-paper'
-              }`
+              `text-sm tracking-wide transition-colors duration-300 ${isActive ? navActive : navIdle}`
             }
           >
             Ana Sayfa
@@ -68,9 +79,7 @@ function HeaderBar() {
           <NavLink
             to="/hakkimizda"
             className={({ isActive }) =>
-              `text-sm tracking-wide transition-colors duration-300 ${
-                isActive ? 'text-gold' : 'text-paper/60 hover:text-paper'
-              }`
+              `text-sm tracking-wide transition-colors duration-300 ${isActive ? navActive : navIdle}`
             }
           >
             Hakkımızda
@@ -81,9 +90,7 @@ function HeaderBar() {
           <NavLink
             to="/iletisim"
             className={({ isActive }) =>
-              `text-sm tracking-wide transition-colors duration-300 ${
-                isActive ? 'text-gold' : 'text-paper/60 hover:text-paper'
-              }`
+              `text-sm tracking-wide transition-colors duration-300 ${isActive ? navActive : navIdle}`
             }
           >
             İletişim
@@ -102,9 +109,9 @@ function HeaderBar() {
           aria-label="Menü"
           aria-expanded={menuOpen}
         >
-          <span className="block w-6 h-px bg-paper" />
-          <span className="block w-6 h-px bg-paper" />
-          <span className="block w-6 h-px bg-paper" />
+          <span className={`block w-6 h-px ${menuLine}`} />
+          <span className={`block w-6 h-px ${menuLine}`} />
+          <span className={`block w-6 h-px ${menuLine}`} />
         </button>
       </div>
 
@@ -153,21 +160,28 @@ function HeaderWithCatalog({
   scrolled: boolean
 }) {
   const { open: catalogOpen } = useCatalogMenu()
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const overHero = isHome && !scrolled
+  const dark = overHero
+
+  const headerSurface =
+    overHero && !catalogOpen
+      ? 'bg-transparent py-5 md:py-6 border-b border-transparent'
+      : overHero && catalogOpen
+        ? 'bg-ink/95 backdrop-blur-xl py-3 border-b border-paper/5'
+        : 'bg-paper/95 backdrop-blur-xl py-3 border-b border-ink/8 shadow-sm shadow-ink/5'
 
   return (
-    <header
-      ref={headerRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        catalogOpen || scrolled
-          ? 'bg-ink/95 backdrop-blur-xl py-3'
-          : 'bg-transparent py-5 md:py-6'
-      } ${catalogOpen ? '' : 'border-b border-transparent'} ${
-        scrolled && !catalogOpen ? 'border-b border-paper/5' : ''
-      }`}
-    >
-      <HeaderBar />
-      <CatalogMenuOverlay headerRef={headerRef} />
-    </header>
+    <HeaderAppearanceContext.Provider value={{ dark }}>
+      <header
+        ref={headerRef}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerSurface}`}
+      >
+        <HeaderBar />
+        <CatalogMenuOverlay headerRef={headerRef} />
+      </header>
+    </HeaderAppearanceContext.Provider>
   )
 }
 
@@ -177,6 +191,7 @@ export function Header() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])

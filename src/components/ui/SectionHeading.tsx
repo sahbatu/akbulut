@@ -14,7 +14,7 @@ export function SectionHeading({
   title,
   subtitle,
   align = 'left',
-  light = false,
+  light = true,
 }: SectionHeadingProps) {
   const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-left'
 
@@ -27,7 +27,7 @@ export function SectionHeading({
       variants={fadeUp}
     >
       {label && (
-        <span className="block text-gold text-xs tracking-[0.3em] uppercase mb-3 font-body">
+        <span className="eyebrow block text-gold mb-3">
           {label}
         </span>
       )}

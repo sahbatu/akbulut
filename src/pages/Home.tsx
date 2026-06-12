@@ -28,7 +28,7 @@ export function Home() {
   return (
     <>
       <PageSeo pageKey="home" />
-      <Hero tagline={settings.tagline} />
+      <Hero tagline={settings.tagline} categories={rootCategories} />
       <LazySection minHeight={420}>
         <Suspense fallback={null}>
           <MontBlancCarousel />

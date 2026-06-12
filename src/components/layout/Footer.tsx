@@ -18,7 +18,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-gold text-xs tracking-[0.25em] uppercase mb-4">Sayfalar</h4>
+            <h4 className="eyebrow text-gold mb-4">Sayfalar</h4>
             <ul className="space-y-2">
               {[
                 { to: '/', label: 'Ana Sayfa' },
@@ -36,7 +36,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-gold text-xs tracking-[0.25em] uppercase mb-4">Ürün Grupları</h4>
+            <h4 className="eyebrow text-gold mb-4">Ürün Grupları</h4>
             <ul className="space-y-2 columns-1">
               {rootCategories.map((cat) => (
                 <li key={cat.id}>
@@ -52,7 +52,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-gold text-xs tracking-[0.25em] uppercase mb-4">İletişim</h4>
+            <h4 className="eyebrow text-gold mb-4">İletişim</h4>
             <ul className="space-y-2 text-paper/50 text-sm">
               <li>{settings.address}</li>
               {settings.phones.map((phone) => (
@@ -73,7 +73,16 @@ export function Footer() {
 
         <div className="border-t border-paper/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-paper/30 text-xs">
           <p>{footer.copyright_text}</p>
-          <p>www.akbulutltd.com</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <Link to="/kvkk" className="hover:text-gold transition-colors">
+              KVKK
+            </Link>
+            <Link to="/cerez-politikasi" className="hover:text-gold transition-colors">
+              Çerez Politikası
+            </Link>
+            <span className="hidden sm:inline text-paper/20">|</span>
+            <span>www.akbulutltd.com</span>
+          </div>
         </div>
       </div>
     </footer>

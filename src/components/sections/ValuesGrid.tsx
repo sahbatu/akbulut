@@ -16,14 +16,14 @@ export function ValuesGrid() {
       {values.map((value, i) => (
         <motion.div
           key={value.title}
-          className="group p-8 border border-paper/5 hover:border-gold/30 bg-ink/30 transition-all duration-500 relative overflow-hidden"
+          className="group p-8 border border-ink/8 hover:border-gold/35 bg-paper rounded-xl transition-all duration-500 relative overflow-hidden shadow-sm"
           variants={fadeUp}
           custom={i}
         >
           <div className="absolute -top-8 -right-8 w-24 h-24 bg-gold/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
           <span className="text-2xl text-gold mb-4 block">{value.icon}</span>
-          <h3 className="font-display text-xl text-paper mb-2">{value.title}</h3>
-          <p className="text-paper/50 text-sm leading-relaxed">{value.description}</p>
+          <h3 className="font-display text-xl text-ink mb-2">{value.title}</h3>
+          <p className="text-ink/55 text-sm leading-relaxed">{value.description}</p>
         </motion.div>
       ))}
     </motion.div>

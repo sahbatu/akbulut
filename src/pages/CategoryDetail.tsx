@@ -1,9 +1,10 @@
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { CategoryGallery } from '@/components/sections/CategoryGallery'
 import { SeoHead } from '@/components/seo/SeoHead'
 import { useCategoryBySlug } from '@/hooks/useCategoryBySlug'
 import { useCategoryImages } from '@/hooks/useCategoryImages'
 import { useCategorySeo } from '@/hooks/useSeo'
+import { NotFound } from '@/pages/NotFound'
 
 export function CategoryDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -16,7 +17,7 @@ export function CategoryDetail() {
   })
 
   if (!loading && !category) {
-    return <Navigate to="/urunlerimiz" replace />
+    return <NotFound />
   }
 
   const hasChildPages = children.length > 0
@@ -33,7 +34,7 @@ export function CategoryDetail() {
                 <Link
                   key={child.id}
                   to={`/urunlerimiz/${child.slug}`}
-                  className="group aspect-square border border-paper/10 hover:border-gold/40 bg-ink-light/30 transition-all duration-300 flex items-center justify-center p-4"
+                  className="group aspect-square border border-ink-light hover:border-gold/45 bg-ink shadow-sm shadow-ink/15 transition-all duration-300 flex items-center justify-center p-4 rounded-xl"
                 >
                   <span className="font-display text-lg text-paper group-hover:text-gold transition-colors text-center">
                     {child.name}

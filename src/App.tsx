@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Layout } from '@/components/layout/Layout'
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -11,6 +11,11 @@ const Contact = lazy(() => import('@/pages/Contact').then((m) => ({ default: m.C
 const CategoryDetail = lazy(() =>
   import('@/pages/CategoryDetail').then((m) => ({ default: m.CategoryDetail })),
 )
+const NotFound = lazy(() => import('@/pages/NotFound').then((m) => ({ default: m.NotFound })))
+const CookiePolicy = lazy(() =>
+  import('@/pages/CookiePolicy').then((m) => ({ default: m.CookiePolicy })),
+)
+const Kvkk = lazy(() => import('@/pages/Kvkk').then((m) => ({ default: m.Kvkk })))
 
 const AdminLayout = lazy(() =>
   import('@/layouts/AdminLayout').then((m) => ({ default: m.AdminLayout })),
@@ -100,6 +105,22 @@ export default function App() {
                 </Suspense>
               }
             />
+            <Route
+              path="cerez-politikasi"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <CookiePolicy />
+                </Suspense>
+              }
+            />
+            <Route
+              path="kvkk"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <Kvkk />
+                </Suspense>
+              }
+            />
           </Route>
 
         <Route
@@ -132,7 +153,14 @@ export default function App() {
           <Route path="icerik" element={<AdminContent />} />
         </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="*"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <NotFound />
+              </Suspense>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

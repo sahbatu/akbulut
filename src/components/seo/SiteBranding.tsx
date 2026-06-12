@@ -6,6 +6,7 @@ export function SiteBranding() {
 
   return (
     <Helmet>
+      <meta name="theme-color" content="#0B2D5B" />
       {settings.favicon_url && <link rel="icon" href={settings.favicon_url} />}
     </Helmet>
   )

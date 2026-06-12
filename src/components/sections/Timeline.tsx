@@ -23,12 +23,12 @@ export function Timeline() {
             viewport={{ once: true, margin: '-40px' }}
           >
             <div className={`md:w-1/2 ${i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
-              <span className="font-display text-4xl gold-gradient-text font-bold">{item.year}</span>
-              <h3 className="font-display text-xl text-paper mt-2">{item.title}</h3>
-              <p className="text-paper/50 text-sm mt-2 leading-relaxed">{item.description}</p>
+              <span className="stat-number text-4xl gold-gradient-text font-bold">{item.year}</span>
+              <h3 className="font-display text-xl text-ink mt-2">{item.title}</h3>
+              <p className="text-ink/55 text-sm mt-2 leading-relaxed">{item.description}</p>
             </div>
 
-            <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-gold rounded-full md:-translate-x-1.5 mt-2 ring-4 ring-ink" />
+            <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-gold rounded-full md:-translate-x-1.5 mt-2 ring-4 ring-paper" />
 
             <div className="hidden md:block md:w-1/2" />
           </motion.div>

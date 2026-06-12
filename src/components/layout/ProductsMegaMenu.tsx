@@ -12,8 +12,53 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { categoryIcons } from '@/data/seed'
 import { useCategories } from '@/hooks/useCategories'
+import { getCategoryPath } from '@/lib/categoryTree'
 import { stopPageScroll, startPageScroll } from '@/lib/lenis'
 import type { Category } from '@/types'
+import { useHeaderAppearance } from './headerAppearance'
+
+interface CatalogSearchHit {
+  category: Category
+  path: Category[]
+}
+
+function searchCategoriesGlobally(categories: Category[], query: string): CatalogSearchHit[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return []
+
+  return categories
+    .filter(
+      (cat) =>
+        cat.name.toLowerCase().includes(q) ||
+        cat.description?.toLowerCase().includes(q),
+    )
+    .map((category) => ({
+      category,
+      path: getCategoryPath(category.id, categories),
+    }))
+    .sort((a, b) => {
+      const rootCompare = (a.path[0]?.name ?? '').localeCompare(b.path[0]?.name ?? '', 'tr')
+      if (rootCompare !== 0) return rootCompare
+      const depthCompare = a.path.length - b.path.length
+      if (depthCompare !== 0) return depthCompare
+      return a.category.name.localeCompare(b.category.name, 'tr')
+    })
+}
+
+function groupSearchHits(hits: CatalogSearchHit[]) {
+  const groups = new Map<string, { root: Category; hits: CatalogSearchHit[] }>()
+  for (const hit of hits) {
+    const root = hit.path[0]
+    if (!root) continue
+    const existing = groups.get(root.id)
+    if (existing) {
+      existing.hits.push(hit)
+    } else {
+      groups.set(root.id, { root, hits: [hit] })
+    }
+  }
+  return Array.from(groups.values())
+}
 
 const CLOSE_DELAY = 200
 
@@ -201,6 +246,60 @@ function filterSubcategories(
     .filter((x): x is { item: Category; nested: Category[] } => x !== null)
 }
 
+function GlobalSearchResults({
+  hits,
+  onNavigate,
+}: {
+  hits: CatalogSearchHit[]
+  onNavigate?: () => void
+}) {
+  const groups = useMemo(() => groupSearchHits(hits), [hits])
+
+  if (hits.length === 0) {
+    return (
+      <p className="text-paper/40 text-sm py-8 text-center">
+        Aramanızla eşleşen kategori bulunamadı.
+      </p>
+    )
+  }
+
+  return (
+    <div className="space-y-8">
+      {groups.map(({ root, hits: groupHits }) => (
+        <div key={root.id}>
+          <h3 className="font-display text-xl text-paper mb-4 flex items-center gap-2">
+            <span className="text-gold">{categoryIcons[root.slug] ?? '◆'}</span>
+            {root.name}
+          </h3>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {groupHits.map(({ category, path }) => (
+              <li key={category.id}>
+                <Link
+                  to={`/urunlerimiz/${category.slug}`}
+                  onClick={onNavigate}
+                  className="block rounded-lg border border-paper/5 px-4 py-3 hover:border-gold/30 hover:bg-paper/5 transition-colors"
+                >
+                  {path.length > 1 && (
+                    <span className="text-paper/40 text-[11px] block mb-1 truncate">
+                      {path
+                        .slice(0, -1)
+                        .map((p) => p.name)
+                        .join(' › ')}
+                    </span>
+                  )}
+                  <span className="text-paper text-sm hover:text-gold transition-colors">
+                    {category.name}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function CatalogGroup({
   item,
   nested,
@@ -248,9 +347,11 @@ function CatalogPanel({
   onClose?: () => void
   className?: string
 }) {
-  const { rootCategories, getChildren, loading } = useCategories()
+  const { rootCategories, categories, getChildren, loading } = useCategories()
   const [activeRoot, setActiveRoot] = useState(rootCategories[0]?.id ?? null)
   const [search, setSearch] = useState('')
+
+  const isSearching = search.trim().length > 0
 
   useEffect(() => {
     if (!activeRoot && rootCategories.length > 0) {
@@ -261,10 +362,26 @@ function CatalogPanel({
   const activeCategory = rootCategories.find((c) => c.id === activeRoot)
   const subcategories = activeRoot ? getChildren(activeRoot) : []
 
-  const displayGroups = useMemo(
-    () => filterSubcategories(subcategories, getChildren, search),
-    [subcategories, getChildren, search],
+  const globalHits = useMemo(
+    () => searchCategoriesGlobally(categories, search),
+    [categories, search],
   )
+
+  const filteredGlobalHits = useMemo(() => {
+    if (!isSearching) return []
+    if (!activeRoot) return globalHits
+    return globalHits.filter((hit) => hit.path[0]?.id === activeRoot)
+  }, [isSearching, globalHits, activeRoot])
+
+  const displayGroups = useMemo(
+    () => filterSubcategories(subcategories, getChildren, ''),
+    [subcategories, getChildren],
+  )
+
+  const rootsWithSearchHits = useMemo(() => {
+    if (!isSearching) return new Set<string>()
+    return new Set(globalHits.map((hit) => hit.path[0]?.id).filter(Boolean) as string[])
+  }, [isSearching, globalHits])
 
   const totalInGroup = subcategories.length
 
@@ -280,18 +397,26 @@ function CatalogPanel({
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Kategori ara... (ör. kartvizit, hp, zarf)"
+              placeholder="Tüm kategorilerde ara... (ör. kartvizit, hp, zarf)"
               className="w-full bg-ink-light/60 border border-paper/10 px-4 py-2.5 pl-10 text-paper text-sm focus:outline-none focus:border-gold/50 transition-colors rounded-lg"
             />
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-paper/30 text-sm">⌕</span>
           </div>
-          {activeCategory && (
-            <p className="text-paper/40 text-xs shrink-0">
-              <span className="text-gold">{activeCategory.name}</span>
-              {' · '}
-              {search ? `${displayGroups.length} sonuç` : `${totalInGroup} kategori`}
-            </p>
-          )}
+          <p className="text-paper/40 text-xs shrink-0">
+            {isSearching ? (
+              <>
+                <span className="text-gold">{filteredGlobalHits.length} sonuç</span>
+                {' · tüm katalog'}
+                {activeRoot && activeCategory ? ` · ${activeCategory.name} filtresi` : ''}
+              </>
+            ) : activeCategory ? (
+              <>
+                <span className="text-gold">{activeCategory.name}</span>
+                {' · '}
+                {totalInGroup} kategori
+              </>
+            ) : null}
+          </p>
         </div>
       </div>
 
@@ -309,22 +434,21 @@ function CatalogPanel({
               <li key={cat.id}>
                 <button
                   type="button"
-                  onMouseEnter={() => {
-                    setActiveRoot(cat.id)
-                    setSearch('')
-                  }}
-                  onClick={() => {
-                    setActiveRoot(cat.id)
-                    setSearch('')
-                  }}
+                  onMouseEnter={() => setActiveRoot(cat.id)}
+                  onClick={() => setActiveRoot(cat.id)}
                   className={`w-full flex items-center gap-3 px-5 py-3 text-left text-sm transition-colors ${
                     activeRoot === cat.id
                       ? 'bg-gold/10 text-gold border-r-2 border-gold'
                       : 'text-paper/65 hover:text-paper hover:bg-paper/5'
-                  }`}
+                  } ${isSearching && rootsWithSearchHits.has(cat.id) ? 'ring-1 ring-inset ring-gold/20' : ''}`}
                 >
                   <span className="text-base opacity-80">{categoryIcons[cat.slug] ?? '◆'}</span>
-                  <span className="leading-snug">{cat.name}</span>
+                  <span className="leading-snug flex-1">{cat.name}</span>
+                  {isSearching && rootsWithSearchHits.has(cat.id) && (
+                    <span className="text-[10px] text-gold/80 tabular-nums">
+                      {globalHits.filter((h) => h.path[0]?.id === cat.id).length}
+                    </span>
+                  )}
                 </button>
               </li>
             ))}
@@ -338,13 +462,20 @@ function CatalogPanel({
         >
           {loading ? (
             <p className="text-paper/40 text-sm">Yükleniyor...</p>
+          ) : isSearching ? (
+            <motion.div
+              key={`search-${search}-${activeRoot ?? 'all'}`}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <GlobalSearchResults hits={filteredGlobalHits} onNavigate={onClose} />
+            </motion.div>
           ) : !activeCategory ? null : displayGroups.length === 0 ? (
-            <p className="text-paper/40 text-sm py-8 text-center">
-              &quot;{search}&quot; için sonuç bulunamadı.
-            </p>
+            <p className="text-paper/40 text-sm py-8 text-center">Bu grupta kategori bulunamadı.</p>
           ) : (
             <motion.div
-              key={activeCategory.id + search}
+              key={activeCategory.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
@@ -400,6 +531,8 @@ function CatalogPanel({
 
 export function ProductsNavItem() {
   const { open, handleOpen, handleClose } = useCatalogMenu()
+  const { dark } = useHeaderAppearance()
+  const navIdle = dark ? 'text-paper/60 hover:text-paper' : 'text-ink/60 hover:text-ink'
 
   return (
     <div className="relative" onMouseEnter={handleOpen} onMouseLeave={handleClose}>
@@ -407,7 +540,7 @@ export function ProductsNavItem() {
         to="/urunlerimiz"
         className={({ isActive }) =>
           `inline-flex items-center gap-1.5 text-sm tracking-wide transition-colors duration-300 ${
-            isActive || open ? 'text-gold' : 'text-paper/60 hover:text-paper'
+            isActive || open ? 'text-gold' : navIdle
           }`
         }
         onFocus={handleOpen}
@@ -489,23 +622,25 @@ function MobileCategoryNode({
 }
 
 export function ProductsMobileMenu({ onNavigate }: { onNavigate: () => void }) {
-  const { rootCategories, getChildren } = useCategories()
+  const { rootCategories, categories, getChildren } = useCategories()
   const [expanded, setExpanded] = useState(false)
   const [expandedRoot, setExpandedRoot] = useState<string | null>(null)
   const [search, setSearch] = useState('')
 
+  const isSearching = search.trim().length > 0
+
+  const globalHits = useMemo(
+    () => searchCategoriesGlobally(categories, search),
+    [categories, search],
+  )
+
   const filteredRoots = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return rootCategories
-    return rootCategories.filter((root) => {
-      if (root.name.toLowerCase().includes(q)) return true
-      return getChildren(root.id).some(
-        (sub) =>
-          sub.name.toLowerCase().includes(q) ||
-          getChildren(sub.id).some((n) => n.name.toLowerCase().includes(q)),
-      )
-    })
-  }, [rootCategories, getChildren, search])
+    if (isSearching) {
+      const rootIds = new Set(globalHits.map((hit) => hit.path[0]?.id).filter(Boolean))
+      return rootCategories.filter((root) => rootIds.has(root.id))
+    }
+    return rootCategories
+  }, [rootCategories, globalHits, isSearching])
 
   return (
     <div className="w-full max-w-sm">
@@ -530,12 +665,36 @@ export function ProductsMobileMenu({ onNavigate }: { onNavigate: () => void }) {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Kategori ara..."
+              placeholder="Tüm kategorilerde ara..."
               className="w-full mb-3 bg-ink-light/60 border border-paper/10 px-4 py-2 text-paper text-sm focus:outline-none focus:border-gold/50"
             />
 
             <div className="space-y-1 text-left max-h-[55vh] overflow-y-auto">
-              {filteredRoots.map((cat) => {
+              {isSearching ? (
+                globalHits.length === 0 ? (
+                  <p className="text-paper/40 text-sm py-4 text-center">Sonuç bulunamadı.</p>
+                ) : (
+                  <ul className="space-y-2 pb-2">
+                    {globalHits.map(({ category, path }) => (
+                      <li key={category.id}>
+                        <Link
+                          to={`/urunlerimiz/${category.slug}`}
+                          onClick={onNavigate}
+                          className="block px-3 py-2 rounded-lg border border-paper/5 hover:border-gold/30"
+                        >
+                          {path.length > 1 && (
+                            <span className="text-paper/40 text-[10px] block truncate">
+                              {path.map((p) => p.name).join(' › ')}
+                            </span>
+                          )}
+                          <span className="text-paper text-sm">{category.name}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              ) : (
+                filteredRoots.map((cat) => {
                 const isOpen = expandedRoot === cat.id
                 const subs = filterSubcategories(getChildren(cat.id), getChildren, search)
 
@@ -585,7 +744,8 @@ export function ProductsMobileMenu({ onNavigate }: { onNavigate: () => void }) {
                     </AnimatePresence>
                   </div>
                 )
-              })}
+              })
+              )}
 
               <Link
                 to="/urunlerimiz"
